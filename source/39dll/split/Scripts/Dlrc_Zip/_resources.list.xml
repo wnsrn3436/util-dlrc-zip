@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<resources>
+  <resource name="dlrc_init" type="RESOURCE"/>
+  <resource name="dlrc_add" type="RESOURCE"/>
+  <resource name="dlrc_extract" type="RESOURCE"/>
+  <resource name="dlrc_set_estring" type="RESOURCE"/>
+  <resource name="dlrc_get_fmax" type="RESOURCE"/>
+</resources>
