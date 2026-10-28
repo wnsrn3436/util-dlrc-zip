@@ -1,6 +1,8 @@
 # DLRC Zip
 
-An archive library for GameMaker 8. It is a set of scripts that bundles several files into one `.dlrc` file and unpacks them again, using a format designed for this library. It supports appending files to an existing archive, extracting only a chosen range, and encrypting the body. Despite the name Zip it does not compress anything, it only bundles. Two builds were released, one backed by 39DLL and one by Faucet Networking, depending on which extension does the file I/O.
+[한국어](README.ko.md)
+
+An archive library for GameMaker 8. It is a set of scripts that bundles several files into one `.dlrc` file and unpacks them again, using a format I designed myself. It supports appending files to an existing archive, extracting only selected files, and encrypting the body. Despite the name Zip, it does not compress anything; it only bundles. I released two builds that differ in which extension handles the file I/O: one uses 39DLL and the other uses Faucet Networking.
 
 
 ## How to use
@@ -16,7 +18,7 @@ dlrc_extract("data.dlrc", "extract\", -1)                // extract everything
 dlrc_extract("data.dlrc", "extract\", 1, 1)              // extract one file starting at index 1
 ```
 
-After `dlrc_extract` finishes, the list returned by `dlrc_init` holds the name and size of each extracted file, alternating. `dlrc_get_fmax` reads only the number of files in an archive. The arguments of every script are described in [docs/reference.md](docs/reference.md).
+After `dlrc_extract` finishes, the list returned by `dlrc_init` holds the name and size of each extracted file in alternating order. `dlrc_get_fmax` reads only the number of files in an archive. The arguments of every script are described in [docs/reference.md](docs/reference.md).
 
 
 ## How it works
@@ -27,7 +29,7 @@ After `dlrc_extract` finishes, the list returned by `dlrc_init` holds the name a
 [file count 4 bytes] [name + content] [name + content] ... [size 4 bytes] [size 4 bytes] ...
 ```
 
-The first 4 bytes are the file count, and the end holds one 4 byte size per file. Because the size table sits at the end, appending means adding the new files after the body and rewriting only the table. Partial extraction is just skipping the earlier files by their sizes.
+The first 4 bytes are the file count, and the end holds one 4-byte size per file. Because the size table sits at the end, appending means adding the new files after the body and rewriting only the table. Partial extraction just skips over the earlier files using their sizes.
 
 ```gml
 // end of dlrc_add: put the body after the count, then write the size table
@@ -36,9 +38,9 @@ for(i=0; i!=temp_size_max; i+=1){dll39_write_uint(temp_size[i], global.dlrc_buff
 dll39_file_write(temp_file, global.dlrc_buffer_id_)
 ```
 
-**Only the body is encrypted.** With a password set, the 39DLL build wraps the body, which holds the names and contents, with `dll39_buffer_encrypt`. The count and the size table stay in plain form, so how many files there are and how big each one is stays visible, but the names and contents cannot be read without the password. When appending, the existing body is decrypted, the new files are added, and it is wrapped again.
+**Only the body is encrypted.** With a password set, the 39DLL build wraps the body, which holds the file names and contents, with `dll39_buffer_encrypt`. The count and the size table stay in plaintext, so the number of files and the size of each one stay visible, but the names and contents cannot be read without the password. When appending, it decrypts the existing body, adds the new files, and wraps it again.
 
-**The two builds store file names differently.** The 39DLL build writes a name as a null terminated string, while the Faucet Networking build writes a 4 byte length followed by the string. Archives made by one build are therefore not compatible with the other. The Faucet Networking build has no encryption and no `dlrc_get_fmax`.
+**The two builds store file names differently.** The 39DLL build writes a file name as a null-terminated string, while the Faucet Networking build writes a 4-byte length followed by the string. Archives made by one build are therefore not compatible with the other. The Faucet Networking build has no encryption and no `dlrc_get_fmax`.
 
 
 ## Files
@@ -57,7 +59,7 @@ dll39_file_write(temp_file, global.dlrc_buffer_id_)
 
 ## Credits
 
-39DLL is a widely used file and networking DLL for GameMaker, made by 39ster. Faucet Networking is a networking and buffer extension for GameMaker made by Medo42.
+39DLL is a file and networking DLL made by 39ster and widely used in the GameMaker community. Faucet Networking is a networking and buffer extension for GameMaker made by Medo42.
 
 
 ## License
